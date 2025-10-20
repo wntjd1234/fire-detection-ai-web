@@ -1,0 +1,2 @@
+npm i express, cookie-parser, unzipper, xml2js, 
+            multer, mysql2, cors, dotenv, firebase-admin, socket.io, -D mocha, chai, supertest, passport, passport-local, passport-kakao, sequelize, bcrypt,nunjucks, D nodemon, morgan, express-session

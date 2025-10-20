@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>CAFSM 클라우드 메인</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background-color: rgb(255, 255, 255);
+    }
+  
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -200px; /* 처음엔 숨김 */
+      width: 200px;
+      height: 100%;
+      background: #ffffff;
+      color: rgb(0, 0, 0);
+      padding: 1rem;
+      transition: left 0.3s ease;
+      z-index: 10;
+    }
+  
+    .sidebar:hover {
+      left: 0; /* 마우스 올리면 보여짐 */
+    }
+  
+    .sidebar h2 {
+      font-size: 20px;
+      width: 100px;
+      border-bottom: 2px solid #e74c3c;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+  
+    .sidebar button {
+      display: block;
+      width: 100%;
+      background: none;
+      border: none;
+      text-align: left;
+      padding: 10px 0;
+      font-size: 16px;
+      color: #333;
+      cursor: pointer;
+    }
+  
+    .sidebar button:hover {
+      color: #e74c3c;
+    }
+  
+    /* main 전체를 iframe으로 채움 */
+    .main {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
+  
+    iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- 좌측 메뉴 영역 -->
+  <div class="sidebar">
+    <h2>Menu</h2>
+    <button onclick="loadPage('introduction.html')">video</button>
+  </div>
+
+  <!-- 중앙 콘텐츠 영역 -->
+  <div class="main">
+    <!-- iframe으로 각 페이지를 이 영역에 로드 -->
+    <iframe id="contentFrame" src="introduction.html"></iframe>
+  </div>
+
+  <script>
+    // 버튼 클릭 시 iframe의 src를 변경하여 중앙 콘텐츠 로드
+    function loadPage(page) {
+      document.getElementById('contentFrame').src = page;
+    }
+  </script>
+</body>
+</html>

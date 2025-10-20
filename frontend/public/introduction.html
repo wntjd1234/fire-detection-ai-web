@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI 산불 감지 시스템 (6채널 모니터링)</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.95);
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* 3x2 영상 레이아웃 */
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 15px;
+      width: 95%;
+      height: 90%;
+    }
+
+    /* 각 영상 카드 */
+    .video-box {
+      position: relative;
+      background: #f7f7f7;
+      border-radius: 10px;
+      border: 2px solid #ccc;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* 헤더 */
+    .video-header {
+      background: #333;
+      color: white;
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+    }
+
+    /* 영상 */
+    video {
+      width: 100%;
+      height: 80%;
+      background: black;
+    }
+
+    /* 버튼 그룹 */
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px;
+    }
+
+    button {
+      background-color: #444;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 6px 10px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background-color: #ff5722;
+    }
+
+    button:disabled {
+      background-color: #888;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="grid-container">
+    <!-- 6개의 영상 박스 -->
+    <div class="video-box" id="cam1">
+      <div class="video-header">1</div>
+      <video id="video1" autoplay muted playsinline></video>
+      <div class="controls">
+        <button onclick="startRecording(1)">시작</button>
+        <button onclick="stopRecording(1)" disabled>종료</button>
+      </div>
+    </div>
+
+    <div class="video-box" id="cam2">
+      <div class="video-header">2</div>
+      <video id="video2" autoplay muted playsinline></video>
+      <div class="controls">
+        <button onclick="startRecording(2)">시작</button>
+        <button onclick="stopRecording(2)" disabled>종료</button>
+      </div>
+    </div>
+
+    <div class="video-box" id="cam3">
+      <div class="video-header">3</div>
+      <video id="video3" autoplay muted playsinline></video>
+      <div class="controls">
+        <button onclick="startRecording(3)">시작</button>
+        <button onclick="stopRecording(3)" disabled>종료</button>
+      </div>
+    </div>
+
+    <div class="video-box" id="cam4">
+      <div class="video-header">4</div>
+      <video id="video4" autoplay muted playsinline></video>
+      <div class="controls">
+        <button onclick="startRecording(4)">시작</button>
+        <button onclick="stopRecording(4)" disabled>종료</button>
+      </div>
+    </div>
+
+    <div class="video-box" id="cam5">
+      <div class="video-header">5</div>
+      <video id="video5" autoplay muted playsinline></video>
+      <div class="controls">
+        <button onclick="startRecording(5)">시작</button>
+        <button onclick="stopRecording(5)" disabled>종료</button>
+      </div>
+    </div>
+
+    <div class="video-box" id="cam6">
+      <div class="video-header">6</div>
+      <video id="video6" autoplay muted playsinline></video>
+      <div class="controls">
+        <button onclick="startRecording(6)">시작</button>
+        <button onclick="stopRecording(6)" disabled>종료</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 녹화 관련 변수
+    const mediaRecorders = {};
+    const recordedChunks = {};
+    const streams = {};
+
+    // 녹화 시작
+    function startRecording(id) {
+      const video = document.getElementById(`video${id}`);
+      const startBtn = video.parentElement.querySelector('button:nth-child(1)');
+      const stopBtn = video.parentElement.querySelector('button:nth-child(2)');
+
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        .then(stream => {
+          video.srcObject = stream;
+          streams[id] = stream;
+
+          const recorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
+          mediaRecorders[id] = recorder;
+          recordedChunks[id] = [];
+
+          recorder.ondataavailable = e => recordedChunks[id].push(e.data);
+          recorder.onstop = () => {
+            const blob = new Blob(recordedChunks[id], { type: 'video/webm' });
+            uploadAndAnalyzeVideo(blob, id);
+          };
+
+          recorder.start();
+          startBtn.disabled = true;
+          stopBtn.disabled = false;
+          console.log(`📹 CCTV ${id} 녹화 시작`);
+        })
+        .catch(err => {
+          console.error('카메라 접근 실패:', err);
+          alert('카메라 접근을 허용해주세요.');
+        });
+    }
+
+    // 녹화 종료
+    function stopRecording(id) {
+      const recorder = mediaRecorders[id];
+      const stream = streams[id];
+      const video = document.getElementById(`video${id}`);
+      const startBtn = video.parentElement.querySelector('button:nth-child(1)');
+      const stopBtn = video.parentElement.querySelector('button:nth-child(2)');
+
+      if (recorder && recorder.state !== 'inactive') {
+        recorder.stop();
+        stream.getTracks().forEach(track => track.stop());
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        console.log(`⏹ CCTV ${id} 녹화 종료`);
+      }
+    }
+
+    // 업로드 및 분석 요청
+    function uploadAndAnalyzeVideo(blob, id) {
+      const formData = new FormData();
+      formData.append('video', blob, `cctv${id}.webm`);
+
+      fetch('/introduction/uploadAndAnalyze', {
+        method: 'POST',
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert(`✅ CCTV ${id} 분석 완료! 결과 영상을 확인하세요.`);
+          window.open(data.resultPath, '_blank');
+        } else {
+          alert(`❌ CCTV ${id} 분석 실패: ${data.error}`);
+        }
+      })
+      .catch(err => {
+        console.error('업로드 및 분석 오류:', err);
+        alert(`❌ CCTV ${id} 서버 통신 실패`);
+      });
+    }
+  </script>
+</body>
+</html>
