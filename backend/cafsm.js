@@ -23,12 +23,31 @@ app.set('view engine', 'html');
 sequelize.sync({ force: false })
     .then(() => console.log('데이터베이스 연결 성공'))
     .catch(err => console.error(err));
+
+const allowedOrigins = [
+  'http://localhost:5000', // 개발 환경 테스트를 위한 로컬 주소
+  'https://cafsm.shop' //  Netlify 도메인
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // origin이 allowedOrigins 배열에 있거나, origin이 없는 요청(예: Postman/브라우저 자체)인 경우 허용
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true); // 허용
+    } else {
+      callback(new Error('Not allowed by CORS')); // 거부
+    }
+  },
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // 허용할 HTTP 메서드
+  credentials: true, // 쿠키 등 인증 정보를 포함한 요청 허용 여부
+  optionsSuccessStatus: 204
+};
+
+// 모든 라우터에 CORS 미들웨어 적용
+app.use(cors(corsOptions));
+
 app.use(
     morgan('dev'),
-    cors({
-      origin: ['https://cafsm.shop','http://localhost:5000'], // 허용 도메인
-      credentials: true
-    }),
     express.static(path.join(__dirname, '../frontend/public')),
     express.json(),
     express.urlencoded({ extended: false }),
@@ -45,6 +64,8 @@ app.use(
         name: 'session-cookie'
     })
 );
+
+
 
 app.use(passport.initialize());
 app.use(passport.session());
