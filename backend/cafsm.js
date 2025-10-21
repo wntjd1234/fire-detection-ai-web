@@ -20,9 +20,9 @@ const app = express();
 app.set('port', process.env.PORT || 5000);
 app.set('view engine', 'html');
 
-sequelize.sync({ force: false })
-    .then(() => console.log('데이터베이스 연결 성공'))
-    .catch(err => console.error(err));
+//sequelize.sync({ force: false })
+//    .then(() => console.log('데이터베이스 연결 성공'))
+//   .catch(err => console.error(err));
 
 const allowedOrigins = [
   'http://localhost:5000', // 개발 환경 테스트를 위한 로컬 주소
