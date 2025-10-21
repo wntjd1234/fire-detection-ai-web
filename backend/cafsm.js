@@ -11,7 +11,7 @@ const session = require('express-session');
 const authRouter = require('./routes/auth');
 const introductionRouter = require('./routes/introduction');
 
-const { sequelize } = require('./models');
+//const { sequelize } = require('./models');
 
 dotenv.config();
 passportConfig();
