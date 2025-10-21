@@ -1,19 +1,26 @@
 from ultralytics import YOLO
 import os
 
-# YOLOv8 사전학습 모델 로드
-model = YOLO('yolov8n.pt')  # 또는 yolov8s.pt, yolov8m.pt
+# 현재 파일 기준 fire.yaml 경로 자동 설정
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+data_yaml_path = os.path.join(BASE_DIR, 'fire.yaml')
 
-# fire.yaml 경로 설정 (현재 스크립트 기준 상대경로 또는 절대경로)
-data_yaml_path = 'fire.yaml'
+# YOLO 모델 로드
+model = YOLO('yolov8m.pt')
 
-# 모델 학습 시작
-model.train(
-    data=data_yaml_path,
-    epochs=50,
-    imgsz=640,
-    batch=8,
-    name='fire_detection_yolov8'
-)
+if __name__ == '__main__':
+    # 학습 실행을 if __name__ == '__main__': 블록 안에 넣습니다.
+    model.train(
+        data=data_yaml_path,
+        epochs=50,
+        imgsz=640,
+        batch=8,
+        workers=1,
+        lr0=0.001,
+        patience=10,
+        augment=True,
+        name='fire_detection_yolov8v2',
+        device='0'
+    )
 
-print("✅ 학습 완료되었습니다.")
+    print("✅ 학습 완료되었습니다.")

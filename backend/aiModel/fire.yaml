@@ -1,7 +1,7 @@
-path: 
-train: train/images
-val: val/images
-test: test/images
+path: C:/Users/wnrkd/Desktop/cap/cafsm/web/backend/aiModel/
+train: C:/Users/wnrkd/Desktop/cap/cafsm/web/backend/aiModel/train/images
+val: C:/Users/wnrkd/Desktop/cap/cafsm/web/backend/aiModel/valid/images
+test: C:/Users/wnrkd/Desktop/cap/cafsm/web/backend/aiModel/test/images
 
 nc: 1
 names: ['fire']

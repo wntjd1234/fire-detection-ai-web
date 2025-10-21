@@ -3,7 +3,7 @@ const path = require('path');
 const passport = require('passport');
 const passportConfig = require('./passport');
 const dotenv = require('dotenv');
-const cors = require('cors'); 
+const cors = require('cors');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
@@ -17,7 +17,7 @@ dotenv.config();
 passportConfig();
 
 const app = express();
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 5000);
 app.set('view engine', 'html');
 
 sequelize.sync({ force: false })
@@ -25,8 +25,11 @@ sequelize.sync({ force: false })
     .catch(err => console.error(err));
 app.use(
     morgan('dev'),
-    cors(),
-    express.static(path.join(__dirname, 'public')),
+    cors({
+      origin: ['https://cafsm.shop','http://localhost:5000'], // 허용 도메인
+      credentials: true
+    }),
+    express.static(path.join(__dirname, '../frontend/public')),
     express.json(),
     express.urlencoded({ extended: false }),
     cookieParser(process.env.SECRET),
@@ -47,8 +50,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/auth', authRouter);
-app.get('/', (req, res) => {res.sendFile(path.join(__dirname, 'public', 'index.html'));});
-app.get('/user', (req, res) => {res.sendFile(path.join(__dirname, 'public', 'user.html'));});
+app.get('/', (req, res) => {res.sendFile(path.join(__dirname, '../frontend/public', 'index.html'));});
+app.get('/user', (req, res) => {res.sendFile(path.join(__dirname, '../frontend/public', 'user.html'));});
 app.use('/upload', express.static(path.join(__dirname, 'upload')));
 app.use('/introduction', introductionRouter);
 

@@ -173,7 +173,7 @@
           recorder.start();
           startBtn.disabled = true;
           stopBtn.disabled = false;
-          console.log(`📹 CCTV ${id} 녹화 시작`);
+          console.log(`${id} 녹화 시작`);
         })
         .catch(err => {
           console.error('카메라 접근 실패:', err);
@@ -201,24 +201,25 @@
     // 업로드 및 분석 요청
     function uploadAndAnalyzeVideo(blob, id) {
       const formData = new FormData();
+      const BACKEND = 'https://fire-detection-ai-web.onrender.com/';
       formData.append('video', blob, `cctv${id}.webm`);
 
-      fetch('/introduction/uploadAndAnalyze', {
+      fetch('introduction/uploadAndAnalyze', {
         method: 'POST',
         body: formData
       })
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          alert(`✅ CCTV ${id} 분석 완료! 결과 영상을 확인하세요.`);
+          alert(`CCTV ${id} 분석 완료! 결과 영상을 확인하세요.`);
           window.open(data.resultPath, '_blank');
         } else {
-          alert(`❌ CCTV ${id} 분석 실패: ${data.error}`);
+          alert(`CCTV ${id} 분석 실패: ${data.error}`);
         }
       })
       .catch(err => {
         console.error('업로드 및 분석 오류:', err);
-        alert(`❌ CCTV ${id} 서버 통신 실패`);
+        alert(`CCTV ${id} 서버 통신 실패`);
       });
     }
   </script>
