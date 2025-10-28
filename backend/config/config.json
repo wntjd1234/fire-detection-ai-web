@@ -1,9 +1,18 @@
 {
-  "development": {
-    "username": "root",
-    "password": "1234",
-    "database": "Samples",
-    "host": "127.0.0.2",
-    "dialect": "mysql"
-  }
+  "development": {
+    "username": "root",
+    "password": "1234",
+    "database": "Samples",
+    "host": "127.0.0.2",
+    "dialect": "mysql"
+  },
+  // 🚨 이 부분이 누락되어 있었습니다. Render 배포 시 env가 'production'일 때 필요합니다.
+  "production": {
+    // Render에서는 DATABASE_URL을 사용하므로, 이 값들은 비워두거나 더미 값을 넣어도 됩니다.
+    "username": "render_user", 
+    "password": "render_pass",
+    "database": "render_db",
+    "host": "dummy_host",
+    "dialect": "postgres" 
+  }
 }
