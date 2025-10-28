@@ -78,8 +78,8 @@ app.use('/upload', express.static(path.join(__dirname, 'upload')));
 
 // API 라우터
 app.use('/auth', authRouter);
-app.use('/introduction', introductionRouter); // 👈 404 오류 해결을 위해 이 경로가 올바른지 다시 한번 확인!
-
+//app.use('/introduction', introductionRouter); // 👈 404 오류 해결을 위해 이 경로가 올바른지 다시 한번 확인!
+app.use('/introduction', (req, res) => res.send('Router Test OK'));
 // SPA 라우팅 (정적 파일 제공)
 app.get('/', (req, res) => { res.sendFile(path.join(__dirname, '../frontend/public', 'index.html')); });
 app.get('/user', (req, res) => { res.sendFile(path.join(__dirname, '../frontend/public', 'user.html')); });
