@@ -1,17 +1,16 @@
 {
-  "development": {
-    "username": "root",
-    "password": "1234",
-    "database": "Samples",
-    "host": "127.0.0.2",
-    "dialect": "mysql"
-  },
-  "production": {
-    // Render에서는 DATABASE_URL을 사용하므로, 이 값들은 비워두거나 더미 값을 넣어도 됩니다.
-    "username": "render_user", 
-    "password": "render_pass",
-    "database": "render_db",
-    "host": "dummy_host",
-    "dialect": "postgres" 
-  }
+  "development": {
+    "username": "root",
+    "password": "1234",
+    "database": "Samples",
+    "host": "127.0.0.2",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "render_user",
+    "password": "render_pass",
+    "database": "render_db",
+    "host": "dummy_host",
+    "dialect": "postgres"
+  }
 }
